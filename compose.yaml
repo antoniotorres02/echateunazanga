@@ -1,1 +1,32 @@
+version: '3.8'
+
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring_app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+    depends_on:
+      - db
+    volumes:
+      - .:/app   # Monta el directorio actual en /app para reflejar cambios en tiempo real
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
